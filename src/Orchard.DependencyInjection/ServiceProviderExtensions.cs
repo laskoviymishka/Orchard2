@@ -35,6 +35,13 @@ namespace Orchard.DependencyInjection
                     {
                         // When a service from the main container is resolved, just add its instance to the container.
                         // It will be shared by all tenant service providers.
+
+                        // https://github.com/aspnet/DependencyInjection/issues/459
+                        if (service.ServiceType.IsAssignableFrom(typeof(IDisposable))) 
+                        {
+                            throw new ArgumentOutOfRangeException($"The type {service.ServiceType} implements IDisposable.");
+                        }
+
                         clonedCollection.AddSingleton(service.ServiceType, serviceProvider.GetService(service.ServiceType));
                     }
                 }
